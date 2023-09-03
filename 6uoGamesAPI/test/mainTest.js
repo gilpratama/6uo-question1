@@ -27,6 +27,32 @@ describe("Valid Login", function () {
 
 });
 
+describe("Invalid Login", function () {
+
+    it("Handle 401 response code", function (done) {
+        // Test for a response with status code 401 (Unauthenticated)
+        request(app)
+            .post("/login")
+            .send({
+                email: "incorrect@example.com",
+                password: "incorrectpassword"
+            })
+            .expect((res) => {
+                // Check for the 401 response code
+                if (res.status !== 401) {
+                    throw new Error("Expected status code 401");
+                }
+
+                // Check for the specific error message
+                if (res.body.message !== "Email or password is incorrect.") {
+                    throw new Error("Expected error message: 'Email or password is incorrect.'");
+                }
+            })
+            .end(done);
+    });
+
+});
+
 describe("Invalid API", function () {
 
     it("Handle 404 response code", function (done) {
@@ -51,7 +77,7 @@ describe("Invalid API", function () {
 
 });
 
-describe("Invalid Login", function () {
+describe("Error Server", function () {
 
     it("Handle 500 response code", function (done) {
         // Test for a response with status code 500 (Internal Server Error)
